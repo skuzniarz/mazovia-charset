@@ -72,6 +72,9 @@ public class MazoviaCharset extends Charset {
          @Override
          protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
             while (in.hasRemaining()) {
+                 if (!out.hasRemaining()) {
+                     return CoderResult.OVERFLOW;
+                 }
                  char inputChar = in.get();
 
                  for (int i = 0; i < CHARS_UNICODE_SORT.length; i++) {
@@ -96,6 +99,9 @@ public class MazoviaCharset extends Charset {
          protected CoderResult decodeLoop(ByteBuffer in, CharBuffer out) {
              
              while (in.hasRemaining()) {
+                 if (!out.hasRemaining()) {
+                     return CoderResult.OVERFLOW;
+                 }
                  char inputChar = (char)(in.get() & 0x00FF);
 
                  for (int i = 0; i < CHARS_UNICODE_SORT.length; i++) {
