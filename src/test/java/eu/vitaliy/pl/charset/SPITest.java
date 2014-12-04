@@ -54,7 +54,7 @@ public class SPITest {
         //given
 
         //when
-        Charset charset = Charset.forName("mazovia-bad-name");
+        Charset.forName("mazovia-bad-name");
 
         //then
     }

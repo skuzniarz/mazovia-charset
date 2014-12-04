@@ -1,19 +1,19 @@
 package eu.vitaliy.pl.charset;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static junitparams.JUnitParamsRunner.$;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.nio.charset.Charset;
 import java.nio.charset.spi.CharsetProvider;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.*;
-import static junitparams.JUnitParamsRunner.*;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +45,8 @@ public class DOSCharsetProviderTest {
         assertThat(charset).isNotNull();
     }
 
-    private Object[] charsetValues() {
+    @SuppressWarnings("unused")
+	private Object[] charsetValues() {
         List<Object[]> charsets = new ArrayList<Object[]>((DOSCharsetProvider.MAZOVIA_ALIASES.length + 2) * 3);
 
         String[] aliases = DOSCharsetProvider.MAZOVIA_ALIASES;
