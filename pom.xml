@@ -1,5 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <groupId>eu.vitaliy</groupId>
         <artifactId>vitaliy-parent</artifactId>
@@ -9,12 +11,16 @@
     <artifactId>mazovia-charset</artifactId>
     <packaging>jar</packaging>
     <version>1.0.1-SNAPSHOT</version>
+    
     <name>mazovia-charset</name>
-    <url>https://github.com/VitaliyOliynyk/mazovia-charset</url>
+    
+    <url>https://github.com/skuzniarz/mazovia-charset</url>
+    
     <description>
         Java implementation of Mazovia encoding. Mazovia encoding is used under MS-DOS to represent Polish texts.
         Basically it is code page 437 with some positions filled with Polish letters.
     </description>
+    
     <licenses>
         <license>
             <name>Apache 2</name>
@@ -23,11 +29,13 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+    
     <scm>
         <url>git@github.com:skuzniarz/mazovia-charset.git</url>
         <connection>scm:git@github.com:skuzniarz/mazovia-charset.git</connection>
         <developerConnection>scm:git:git@github.com:skuzniarz/mazovia-charset.git</developerConnection>
     </scm>
+    
     <developers>
         <developer>
             <id>developer</id>
@@ -47,12 +55,25 @@
         </developer>
     </developers>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+                </configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
     <dependencies>
-
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
             <version>1.4</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>pl.pragmatists</groupId>
@@ -61,4 +82,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
 </project>

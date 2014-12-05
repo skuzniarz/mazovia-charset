@@ -1,4 +1,5 @@
 package eu.vitaliy.pl.charset;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -7,9 +8,9 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
 /**
-  *
-  * @author  Vitaliy Oliynyk
-  */
+ *
+ * @author  Vitaliy Oliynyk
+ */
 public class MazoviaCharset extends Charset {
 
      public final static char[][] CHARS_UNICODE_SORT = new char[][] {
@@ -32,6 +33,25 @@ public class MazoviaCharset extends Charset {
          , {'\u017B', 161}//Ż
          , {'\u017C', 167}//ż
      };
+     
+     /**
+      * Lookup table for charset decoder - maps bytes to chars
+      */
+     private static final char[] DECODER_LOOKUP_TABLE = new char[256];
+     
+     /**
+      * <p>
+      * Prepares lookup table.
+      * </p>
+      */
+     static {
+    	 for (int i = 0 ; i < DECODER_LOOKUP_TABLE.length ; i++) {
+    		 DECODER_LOOKUP_TABLE[i] = (char) i;
+    	 }
+    	 for (int i = 0 ; i < CHARS_UNICODE_SORT.length ; i++) {
+    		 DECODER_LOOKUP_TABLE[CHARS_UNICODE_SORT[i][1]] = CHARS_UNICODE_SORT[i][0];
+    	 }
+     }
 
      public MazoviaCharset(String canonicalName, String[] aliases) {
          super(canonicalName, aliases);
@@ -39,11 +59,7 @@ public class MazoviaCharset extends Charset {
      
      @Override
      public boolean contains(Charset cs) {
-         if (cs.equals(this)) {
-             return true;
-         }
-
-         return false;
+         return cs.equals(this);
      }
 
      @Override
@@ -89,31 +105,31 @@ public class MazoviaCharset extends Charset {
          }
      }
 
-     public class PrivCharsetDecoder extends CharsetDecoder {
-         public PrivCharsetDecoder(Charset cs, float averageCharsPerByte,
-         float maxCharsPerByte) {
-             super(cs, averageCharsPerByte, maxCharsPerByte);
-         }
 
-         @Override
-         protected CoderResult decodeLoop(ByteBuffer in, CharBuffer out) {
-             
-             while (in.hasRemaining()) {
-                 if (!out.hasRemaining()) {
-                     return CoderResult.OVERFLOW;
-                 }
-                 char inputChar = (char)(in.get() & 0x00FF);
+	/**
+	 * 
+	 */
+	public class PrivCharsetDecoder extends CharsetDecoder {
+		/**
+		 * 
+		 * @param cs
+		 * @param averageCharsPerByte
+		 * @param maxCharsPerByte
+		 */
+		public PrivCharsetDecoder(Charset cs, float averageCharsPerByte, float maxCharsPerByte) {
+			super(cs, averageCharsPerByte, maxCharsPerByte);
+		}
 
-                 for (int i = 0; i < CHARS_UNICODE_SORT.length; i++) {
-                     if (inputChar == CHARS_UNICODE_SORT[i][1]) {
-                         inputChar = CHARS_UNICODE_SORT[i][0];
-                     }
-                 }
-                 out.put(inputChar);
-             }
-
-             return CoderResult.UNDERFLOW;
-         }
-     }
-
+		@Override
+		protected CoderResult decodeLoop(ByteBuffer in, CharBuffer out) {
+			while (in.hasRemaining()) {
+				if (!out.hasRemaining()) {
+					return CoderResult.OVERFLOW;
+				}
+				char inputChar = (char) (in.get() & 0x00FF);
+				out.put(DECODER_LOOKUP_TABLE[inputChar]);
+			}
+			return CoderResult.UNDERFLOW;
+		}
+	}
 }

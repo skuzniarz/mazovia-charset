@@ -1,80 +1,113 @@
 package eu.vitaliy.pl.charset;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import static org.fest.assertions.Assertions.*;
+import org.junit.Before;
+import org.junit.Test;
+
 /**
- * Created by IntelliJ IDEA.
- * User: xaoc
- * Date: 13.03.12
- * Time: 12:26
- * To change this template use File | Settings | File Templates.
+ * 
  */
+
 public class SPITest {
 
-    private String unicodeString;
-    private byte[] mazoviaBytes;
+	private String unicodeString;
+	private byte[] mazoviaBytes;
+	private String asciiString;
+	private byte[] asciiBytes;
 
-    @Before
-    public void before(){
-        unicodeString = makeUnicodeTestString();
-        mazoviaBytes = makeMazowiaTestBytes();
-    }
+	/**
+	 * 
+	 */
+	@Before
+	public void before() {
+		unicodeString = makeUnicodeTestString();
+		mazoviaBytes = makeMazoviaTestBytes();
+		asciiString = makeASCIITestString();
+		asciiBytes = makeASCIITestBytes();
+	}
 
-    @Test
-    public void testDecodeFromMazowia(){
-        //given
-        //byte[] mazowiaBytes = new byte[]{(byte)143, (byte)134, (byte)149};
+	/**
+	 * 
+	 */
+	@Test
+	public void testDecodeFromMazovia() {
+		assertThat(new String(mazoviaBytes, Charset.forName("mazovia"))).isEqualTo(unicodeString);
+	}
 
-        //when
-        String str2 = new String(mazoviaBytes, Charset.forName("mazovia"));
+	/**
+	 * 
+	 */
+	@Test
+	public void testDecodeFromMazoviaASCII() {
+		String mazoviaString = new String(asciiBytes, Charset.forName("mazovia"));
+		assertThat(mazoviaString).isEqualTo(asciiString);
+	}
 
-        //then
-        assertThat(str2).isEqualTo(unicodeString);
-    }
+	/**
+	 * 
+	 */
+	@Test
+	public void testEncodeToMazovia() {
+		assertThat(unicodeString.getBytes(Charset.forName("mazovia"))).isEqualTo(mazoviaBytes);
+	}
 
+	/**
+	 * 
+	 */
+	@Test(expected = UnsupportedCharsetException.class)
+	public void testInvalidCharset() {
+		Charset.forName("mazovia-bad-name");
+	}
 
-    @Test
-    public void testEncodeToMazowia(){
-        //given
+	/**
+	 * 
+	 * @return
+	 */
+	private String makeUnicodeTestString() {
+		char[] unicodeChars = new char[MazoviaCharset.CHARS_UNICODE_SORT.length];
+		for (int i = 0 ; i < unicodeChars.length ; i++) {
+			unicodeChars[i] = MazoviaCharset.CHARS_UNICODE_SORT[i][0];
+		}
+		return new String(unicodeChars);
+	}
 
-        //when
-        byte[] result = unicodeString.getBytes(Charset.forName("mazovia"));
-
-        //then
-        assertThat(result).isEqualTo(mazoviaBytes);
-    }
-
-    @Test(expected = UnsupportedCharsetException.class)
-    public void testInvalidCharset(){
-        //given
-
-        //when
-        Charset.forName("mazovia-bad-name");
-
-        //then
-    }
-
-
-    private String makeUnicodeTestString(){
-        char[] unicodeChars = new char[MazoviaCharset.CHARS_UNICODE_SORT.length];
-        for(int i=0;i<unicodeChars.length; i++)
-        {
-            unicodeChars[i] = MazoviaCharset.CHARS_UNICODE_SORT[i][0];
-        }
-        return new String(unicodeChars);
-    }
-
-    private byte[] makeMazowiaTestBytes(){
-        byte[] mazowiaBytes = new byte[MazoviaCharset.CHARS_UNICODE_SORT.length];
-        for(int i=0;i<mazowiaBytes.length; i++)
-        {
-            mazowiaBytes[i] = (byte)MazoviaCharset.CHARS_UNICODE_SORT[i][1];
-        }
-        return mazowiaBytes;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] makeMazoviaTestBytes() {
+		byte[] mazoviaBytes = new byte[MazoviaCharset.CHARS_UNICODE_SORT.length];
+		for (int i = 0 ; i < mazoviaBytes.length ; i++) {
+			mazoviaBytes[i] = (byte) MazoviaCharset.CHARS_UNICODE_SORT[i][1];
+		}
+		return mazoviaBytes;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private String makeASCIITestString() {
+		StringBuilder asciiStringBuilder = new StringBuilder();
+		for (int i = 0; i < 128; i++) {
+			asciiStringBuilder.append((char) i);
+		}
+		return asciiStringBuilder.toString();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] makeASCIITestBytes() {
+		byte[] asciiBytes = new byte[128];
+		for (int i = 0; i < asciiBytes.length; i++) {
+			asciiBytes[i] = (byte) i;
+		}
+		return asciiBytes;
+	}
 }
